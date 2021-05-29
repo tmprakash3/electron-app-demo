@@ -6,7 +6,7 @@ function Next() {
   return (
     <React.Fragment>
       <Head>
-        <title>Next - Nextron (with-javascript)</title>
+        <title>MITE - Test Demo</title>
       </Head>
       <div>
         <p>
