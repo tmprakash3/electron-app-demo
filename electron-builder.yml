@@ -1,5 +1,5 @@
 appId: com.example.nextron
-productName: My Nextron App
+productName: MITE Demo
 directories:
   output: dist
   buildResources: resources
