@@ -300,7 +300,6 @@ class EditableTable extends React.Component {
       <div>
         <Table
           components={components}
-          bordered
           dataSource={dataSource}
           columns={columns}
           pagination={{ pageSize: 300}}
@@ -319,6 +318,30 @@ class EditableTable extends React.Component {
           }
           .idHeadBackgroundColor {
             background: #c5c5c5;
+          }
+          .ant-table-thead > tr > th {
+            border: 0;
+          }
+          .ant-table-thead > tr > th:not(:last-child):not(.ant-table-selection-column):not(.ant-table-row-expand-icon-cell):not([colspan])::before {
+            background-color: transparent;
+          }
+          .ant-table-thead > tr > th, .ant-table-tbody > tr > td, .ant-table tfoot > tr > th, .ant-table tfoot > tr > td {
+            padding: 8px;
+          }
+          .ant-table-tbody > tr > td:nth-child(2) div .ant-select, .ant-table-thead > tr > th:nth-child(2) {
+            width: 110px !important;
+          }
+          .ant-table-tbody > tr > td:nth-child(3) div .ant-select, .ant-table-thead > tr > th:nth-child(3) {
+            width: 175px !important;
+          }
+          .ant-table-tbody > tr > td:nth-child(4) div .ant-select, .ant-table-thead > tr > th:nth-child(4) {
+            width: 285px !important;
+          }
+          .ant-table-tbody > tr > td:nth-child(5) div .ant-select, .ant-table-thead > tr > th:nth-child(5) {
+            width: 200px !important;
+          }
+          .ant-select:not(.ant-select-customize-input) .ant-select-selector, .ant-table-tbody > tr > td {
+            border: 0;
           }
         `}</style>
       </div>

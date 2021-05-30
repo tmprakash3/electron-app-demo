@@ -22,7 +22,9 @@ const SelectComponent = ({ record, defaultValue, options }) => {
   return (
     <div>
       {record.idHead === "#" ? (
-        <></>
+        <>
+          <p>{record.type}</p>
+        </>
       ) : (
         <Select
           showSearch
@@ -33,7 +35,7 @@ const SelectComponent = ({ record, defaultValue, options }) => {
           onBlur={onBlur}
           onSearch={onSearch}
           defaultValue={defaultValue}
-          style={{width: 150}}
+          style={{ width: 150 }}
         >
           {options?.map((option, i) => (
             <React.Fragment key={`${i}_${option}`}>
@@ -45,6 +47,9 @@ const SelectComponent = ({ record, defaultValue, options }) => {
       <style jsx global>{`
         .ant-select-arrow{
           display: none
+        }
+        .ant-select {
+          width: 205px !important
         }
       `}</style>
     </div>
