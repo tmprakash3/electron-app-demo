@@ -3,7 +3,7 @@ import { Select } from "antd";
 import "antd/dist/antd.css";
 const { Option } = Select;
 
-const SelectComponent = () => {
+const SelectComponent = ({ record, defaultValue, options }) => {
   function onChange(value) {
     console.log(`selected ${value}`);
   }
@@ -21,24 +21,32 @@ const SelectComponent = () => {
   }
   return (
     <div>
-      <Select
-        showSearch
-        style={{ width: 200 }}
-        placeholder="Select a person"
-        optionFilterProp="children"
-        onChange={onChange}
-        onFocus={onFocus}
-        onBlur={onBlur}
-        onSearch={onSearch}
-        defaultValue="s"
-        filterOption={(input, option) =>
-          option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+      {record.idHead === "#" ? (
+        <></>
+      ) : (
+        <Select
+          showSearch
+          placeholder="Select a person"
+          optionFilterProp="children"
+          onChange={onChange}
+          onFocus={onFocus}
+          onBlur={onBlur}
+          onSearch={onSearch}
+          defaultValue={defaultValue}
+          style={{width: 150}}
+        >
+          {options?.map((option, i) => (
+            <React.Fragment key={`${i}_${option}`}>
+              <Option value={`${i}_${option}`}>{option}</Option>
+            </React.Fragment>
+          ))}
+        </Select>
+      )}
+      <style jsx global>{`
+        .ant-select-arrow{
+          display: none
         }
-      >
-        <Option value="jack">Jack</Option>
-        <Option value="lucy">Lucy</Option>
-        <Option value="tom">Tom</Option>
-      </Select>
+      `}</style>
     </div>
   );
 };

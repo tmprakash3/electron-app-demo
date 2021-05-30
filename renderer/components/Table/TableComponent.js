@@ -4,8 +4,9 @@ import "antd/dist/antd.css";
 import { Table, Input, Button, Form, Select } from "antd";
 
 import TableData from "../../common/data";
+import SelectComponent from "../Select/SelectComponent";
+import Popup from '../Popup/Popup'
 //import styled from "styled-jsx";
-
 
 const EditableContext = React.createContext(null);
 const { Option } = Select;
@@ -44,8 +45,6 @@ const EditableCell = ({
       [dataIndex]: record[dataIndex],
     });
   };
-
-  console.log({ title, dataIndex, children, record });
 
   const save = async () => {
     try {
@@ -107,32 +106,172 @@ class EditableTable extends React.Component {
       {
         title: "Action",
         dataIndex: "action",
+        render: (text, record, index) => (
+          <SelectComponent
+            record={record}
+            defaultValue={record.action}
+            options={record.actionsArray}
+          />
+        ),
       },
       {
-        title: "Parameter / Service Type",
+        title: "Parameter/Service Type",
         dataIndex: "serviceType",
+        render: (text, record, index) => (
+          <SelectComponent
+            record={record}
+            defaultValue={record.serviceType}
+            options={record.serviceTypesArray}
+          />
+        ),
       },
       {
-        title: "Parameter / Description",
+        title: "Parameter/Description",
         dataIndex: "description",
+        render: (text, record, index) => (
+          <SelectComponent
+            record={record}
+            defaultValue={record.description}
+            options={record.descriptionsArray}
+          />
+        ),
       },
       {
-        title: "Desired Value / Expected Value",
+        title: "Desired Value/Expected Value",
         dataIndex: "desiredValuesArray",
+        render: (text, record, index) => (
+          <SelectComponent
+            record={record}
+            defaultValue={record.desiredValue}
+            options={record.desiredValuesArray}
+          />
+        ),
       },
       {
         title: "Extensions",
-        dataIndex: "extensionsArray",
+        dataIndex: "extensions",
       },
       {
         title: "Additional Remarks",
-        dataIndex: "commentsArray",
+        dataIndex: "comments",
       },
     ];
     this.state = {
       dataSource: TableData.testcase.TestCaseFormid,
+      popup: {
+        visible: false, 
+        x: 0, y: 0
+      }
     };
   }
+
+  componentDidMount() {
+    /** Test sequence */
+    const testSequenceValue = this.state.dataSource?.filter(
+      (testsuite) => testsuite.type === "Test Sequence"
+    );
+    const testSequenceDesiredValue = testSequenceValue
+      .map((val) => val.desiredValue.toString())
+      .filter((val) => val !== "");
+    //testSequenceDesiredValue.unshift("desiredValue");
+
+    const testSequenceActions = testSequenceValue
+      .map((val) => val.action)
+      .filter((val) => val !== "");
+    //testSequenceComments.unshift("comments");
+    const testSequenceServiceTypes = testSequenceValue
+      .map((val) => val.serviceType)
+      .filter((val) => val !== "");
+    //testSequenceExtensions.unshift("extensions");
+    const testSequenceDescriptions = testSequenceValue
+    .map((val) => val.description)
+    .filter((val) => val !== "");
+
+    /** Post conditions */
+
+    const postCondtionValue = this.state.dataSource.filter(
+      (testsuite) => testsuite.type === "Post Conditions"
+    );
+    const postCondistionDesiredValue = postCondtionValue
+      .map((val) => val.desiredValue)
+      .filter((val) => val !== "");
+    //postCondistionDesiredValue.unshift("desiredValue");
+    const postCondistionActions = postCondtionValue
+      .map((val) => val.action)
+      .filter((val) => val !== "");
+    // postCondistionComments.unshift("comments");
+    const postCondistionServiceTypes = postCondtionValue
+      .map((val) => val.serviceType)
+      .filter((val) => val !== "");
+    //postCondistionExtensions.unshift("extensions");
+    const postCondistionDescriptions = postCondtionValue
+    .map((val) => val.description)
+    .filter((val) => val !== "");
+
+    /** pre condition */
+    const preCondtionValue = this.state.dataSource?.filter(
+      (testsuite) => testsuite.type === "Pre Conditions"
+    );
+    const preCondistionDesiredValue = preCondtionValue
+      .map((val) => val.desiredValue)
+      .filter((val) => val !== "");
+    //preCondistionDesiredValue.unshift("desiredValue");
+
+    const preCondistionActions = preCondtionValue
+      .map((val) => val.action)
+      .filter((val) => val !== "");
+    //preCondistionComments.unshift("comments");
+    const preCondistionServiceTypes = preCondtionValue
+      .map((val) => val.serviceType)
+      .filter((val) => val !== "");
+    //preCondistionExtensions.unshift("extensions");
+    const preCondistionDescritions = preCondtionValue
+      .map((val) => val.description)
+      .filter((val) => val !== "");
+
+    const testSequenceVal = this.state.dataSource?.map((testsuite) => {
+      if (testsuite.type === "Test Sequence") {
+        testsuite["desiredValuesArray"] = testSequenceDesiredValue;
+        testsuite["actionsArray"] = testSequenceActions;
+        testsuite["serviceTypesArray"] = testSequenceServiceTypes;
+        testsuite["descriptionsArray"] = testSequenceDescriptions;
+      }
+      if (testsuite.type === "Post Conditions") {
+        testsuite["desiredValuesArray"] = postCondistionDesiredValue;
+        testsuite["actionsArray"] = postCondistionActions;
+        testsuite["serviceTypesArray"] = postCondistionServiceTypes;
+        testsuite["descriptionsArray"] = postCondistionDescriptions;
+      }
+      if (testsuite.type === "Pre Conditions") {
+        testsuite["desiredValuesArray"] = preCondistionDesiredValue;
+        testsuite["actionsArray"] = preCondistionActions;
+        testsuite["serviceTypesArray"] = preCondistionServiceTypes;
+        testsuite["descriptionsArray"] = preCondistionDescritions;
+      }
+      return testsuite;
+    });
+  }
+
+  onRow = record => ({
+    onContextMenu: event => {
+      event.preventDefault()
+      if (!this.state.visible) {
+        const that = this
+        document.addEventListener(`click`, function onClickOutside() {
+          that.setState({popup: {visible: false}})
+          document.removeEventListener(`click`, onClickOutside)
+        })
+      }
+      this.setState({
+        popup: {
+          record,
+          visible: true,
+          x: event.clientX,
+          y: event.clientY
+        }
+      })
+    }
+  })
 
   render() {
     const { dataSource } = this.state;
@@ -158,27 +297,31 @@ class EditableTable extends React.Component {
       };
     });
     return (
-        <div>
-          <Table
-            components={components}
-            bordered
-            dataSource={dataSource}
-            columns={columns}
-            rowClassName={(record, index) =>
-              record.idHead === "#"
-                ? "idHeadBackgroundColor"
-                : "nonIdHeadBackgroundColor"
-            }
-          />
-           <style jsx global>{`
-            .nonIdHeadBackgroundColor {
-              background: #fff;
-            }
-            .idHeadBackgroundColor {
-              background: #c5c5c5;
-            }
-      `}</style>
-        </div>
+      <div>
+        <Table
+          components={components}
+          bordered
+          dataSource={dataSource}
+          columns={columns}
+          pagination={{ pageSize: 300}}
+          onRow={this.onRow}
+          // scroll={{ y: 2000 }}
+          rowClassName={(record, index) =>
+            record.idHead === "#"
+              ? "idHeadBackgroundColor"
+              : "nonIdHeadBackgroundColor"
+          }
+        />
+        <Popup {...this.state.popup}/>
+        <style jsx global>{`
+          .nonIdHeadBackgroundColor {
+            background: #fff;
+          }
+          .idHeadBackgroundColor {
+            background: #c5c5c5;
+          }
+        `}</style>
+      </div>
     );
   }
 }
